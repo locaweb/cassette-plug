@@ -1,4 +1,4 @@
-# Cassette.Plug
+# Getting started
 
 A Plug to authenticate and authorize users based on Cassette
 

@@ -8,6 +8,11 @@ defmodule Cassette.Plug.Mixfile do
      elixirc_paths: elixirc_paths(Mix.env),
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     source_url: "https://github.com/locaweb/cassette-plug",
+     homepage_url: "http://developer.locaweb.com.br/",
+     docs: [
+       extras: ["README.md", "CONTRIBUTING.md"],
+     ],
      deps: deps]
   end
 
@@ -25,6 +30,7 @@ defmodule Cassette.Plug.Mixfile do
     [
       {:ex_doc, "~> 0.11", only: :dev},
       {:earmark, "~> 0.1", only: :dev},
+      {:dialyze, "~> 0.2", only: :test},
       {:cassette, "~> 0.0", git: "https://code.locaweb.com.br/elixir/cassette.git"},
       {:plug, "~> 1.0"},
     ]

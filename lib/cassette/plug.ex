@@ -83,14 +83,14 @@ defmodule Cassette.Plug do
     cassette = Keyword.get(options, :cassette, Cassette)
     service = Keyword.get(options, :service, &url/2)
 
-    case {get_session(conn, "user"), conn.query_params["ticket"]} do
+    case {get_session(conn, "cas_user"), conn.query_params["ticket"]} do
       {%Cassette.User{}, _} -> conn
       {nil, nil} ->
         location = "#{cassette.config.base_url}/login?service=#{URI.encode(service.(conn, options))}"
         conn |> put_resp_header("location", location) |> send_resp(307, "") |> halt
       {nil, ticket} ->
         case cassette.validate(ticket, service.(conn, options)) do
-          {:ok, user} -> put_session(conn, :user, user)
+          {:ok, user} -> put_session(conn, "cas_user", user)
           _ -> conn |> resp(403, "Forbidden") |> halt
         end
     end

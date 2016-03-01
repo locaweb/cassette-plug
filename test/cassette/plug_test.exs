@@ -55,7 +55,7 @@ defmodule Cassette.PlugTest do
 
   @tag session: true
   test "call/2 a user in session does not halt the connection", %{conn: conn} do
-    conn = conn |> Plug.Conn.put_session("user", CassetteMock.valid_user)
+    conn = conn |> Plug.Conn.put_session("cas_user", CassetteMock.valid_user)
 
     assert %Plug.Conn{halted: false} = Cassette.Plug.call(conn, [cassette: CassetteMock])
   end
@@ -70,7 +70,7 @@ defmodule Cassette.PlugTest do
     assert CassetteMock.valid_user ==
       conn
       |> Cassette.Plug.call([cassette: CassetteMock])
-      |> Plug.Conn.get_session("user")
+      |> Plug.Conn.get_session("cas_user")
   end
 
   @tag session: true, path: "/?ticket=#{CassetteMock.invalid_ticket}"
