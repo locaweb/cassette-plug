@@ -1,0 +1,82 @@
+defmodule Cassette.ControllerTest do
+  use ExUnit.Case, async: true
+  use Plug.Test
+
+  import Cassette.Controller
+
+  setup tags do
+    session_opts = Plug.Session.init(store: :cookie, key: "_palantir_key",
+                                 encryption_salt: "As34Atb", signing_salt: "eTcLslAt")
+
+    user = if tags[:with_user] do
+      CassetteMock.valid_user
+    else
+      nil
+    end
+
+    conn = conn(:get, tags[:path] || "/", tags[:body] || %{})
+    |> Plug.Session.call(session_opts)
+    |> Plug.Conn.fetch_session()
+    |> Plug.Conn.fetch_query_params()
+    |> Plug.Conn.put_session("user", user)
+
+    {:ok, conn: conn}
+  end
+
+  test "has_role?/2 returns false when session has no user (when role is a string)", %{conn: conn} do
+    refute conn |> has_role?("ADMIN")
+  end
+
+  test "has_role?/2 returns false when session has no user (when role is a list)", %{conn: conn} do
+    refute conn |> has_role?(["EXAMPLE_ADMIN", "EXAMPLE_MANAGER"])
+  end
+
+  test "has_role?/2 returns false when session has no user (when role is a function)", %{conn: conn} do
+    refute conn |> has_role?(fn(_conn) -> "EXAMPLE_ADMIN" end)
+  end
+
+  @tag with_user: true
+  test "has_role?/2 returns true when the user has any of the roles listed", %{conn: conn} do
+    assert conn |> has_role?(["ADMIN", "SOME_WEIRD_ROLE"])
+  end
+
+  @tag with_user: true
+  test "has_role?/2 returns false when the user does not have any of the roles listed", %{conn: conn} do
+    refute conn |> has_role?(["SOME_WEIRD_ROLE", "ANOTHER_WEIRD_ROLE"])
+  end
+
+  @tag with_user: true
+  test "has_role?/2 returns true when the user has the role", %{conn: conn} do
+    assert conn |> has_role?("ADMIN")
+  end
+
+  @tag with_user: true
+  test "has_role?/2 returns false when the user does not have the role", %{conn: conn} do
+    refute conn |> has_role?("SOME_WEIRD_ROLE")
+  end
+
+  @tag with_user: true
+  test "has_role?/2 returns true when the user has the role (when role is a function)", %{conn: conn} do
+    assert conn |> has_role?(fn(_conn) -> "ADMIN" end)
+  end
+
+  @tag with_user: true
+  test "has_role?/2 returns false when the user does not have the role (when role is a function)", %{conn: conn} do
+    refute conn |> has_role?(fn(_conn) -> "SOME_WEIRD_ROLE" end)
+  end
+
+  @tag with_user: false
+  test "require_role!/2 halts the connection when there is no user in session", %{conn: conn} do
+    assert %Plug.Conn{halted: true, status: 403} = conn |> require_role!("ADMIN")
+  end
+
+  @tag with_user: true
+  test "require_role!/2 halts the connection when user does not have the role", %{conn: conn} do
+    assert %Plug.Conn{halted: true, status: 403} = conn |> require_role!("SOME_WEIRD_ROLE")
+  end
+
+  @tag with_user: true
+  test "require_role!/2 does not halt the connection when user has the role", %{conn: conn} do
+    assert %Plug.Conn{halted: false} = conn |> require_role!("ADMIN")
+  end
+end
