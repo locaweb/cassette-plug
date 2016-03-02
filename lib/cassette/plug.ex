@@ -57,23 +57,8 @@ defmodule Cassette.Plug do
     cassette.config.service
   end
 
-  @spec url(Plug.Conn.t, term) :: String.t
-  @doc """
-  Computes the service from the URL requested in the `conn` argument.
-  It will remove the `ticket` from the query string paramaters since the ticket has not been generated with it.
-  """
-  def url(conn, _options) do
-    query_string =
-      conn.query_params
-      |> Enum.reject(fn({k, _}) -> k == "ticket" end)
-      |> URI.encode_query
-
-    ["#{conn.scheme}://#{conn.host}:#{conn.port}#{conn.request_path}", query_string]
-    |> Enum.reject(fn(v) -> is_nil(v) || v == "" end)
-    |> Enum.join("?")
-  end
-
-  @spec call(Plug.Conn.t, [cassette: Cassette.Support, service: ((Plug.Conn, term) -> String.t)]) :: Plug.Conn.t
+  @type options :: [cassette: Cassette.Support, handler: Cassette.Plug.DefaultHandler]
+  @spec call(Plug.Conn.t, options) :: Plug.Conn.t
   @doc """
   Runs this plug.
 
@@ -81,17 +66,15 @@ defmodule Cassette.Plug do
   """
   def call(conn, options) do
     cassette = Keyword.get(options, :cassette, Cassette)
-    service = Keyword.get(options, :service, &url/2)
+    handler = Keyword.get(options, :handler, Cassette.Plug.DefaultHandler)
 
     case {get_session(conn, "cas_user"), conn.query_params["ticket"]} do
       {%Cassette.User{}, _} -> conn
-      {nil, nil} ->
-        location = "#{cassette.config.base_url}/login?service=#{URI.encode(service.(conn, options))}"
-        conn |> put_resp_header("location", location) |> send_resp(307, "") |> halt
+      {nil, nil} -> handler.unauthenticated(conn, options)
       {nil, ticket} ->
-        case cassette.validate(ticket, service.(conn, options)) do
+        case cassette.validate(ticket, handler.service(conn, options)) do
           {:ok, user} -> put_session(conn, "cas_user", user)
-          _ -> conn |> resp(403, "Forbidden") |> halt
+          _ -> handler.invalid_authentication(conn, options)
         end
     end
   end
