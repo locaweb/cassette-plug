@@ -2,7 +2,7 @@ defmodule Cassette.ControllerTest do
   use ExUnit.Case, async: true
   use Plug.Test
 
-  import Cassette.Controller
+  import TestController
 
   setup tags do
     session_opts = Plug.Session.init(store: :cookie, key: "_palantir_key",
