@@ -58,9 +58,14 @@ defmodule Cassette.Plug.AuthenticationHandler do
   @callback invalid_authentication(conn :: Plug.Conn.t, options :: term) :: Plug.Conn.t
 
   @doc """
-  Called to extract the authentication token from the `conn`
+  Called to extract the current authenticated user and/or the authentication token from `conn`
   """
-  @callback authentication_token(conn :: Plug.Conn.t, options :: term) :: {:ok, term} | :error
+  @callback user_or_token(conn :: Plug.Conn.t, options :: term) :: {Cassette.User.t | nil, {:ok, String.t} | :error}
+
+  @doc """
+  Called when successfully authenticated the user on `conn`
+  """
+  @callback user_authenticated(conn :: Plug.Conn.t, user :: Cassette.User.t, options :: term) :: Plug.Conn.t
 
   @spec default :: Cassette.Plug.AuthenticationHandler
   @doc """
@@ -108,6 +113,20 @@ defmodule Cassette.Plug.AuthenticationHandler do
         conn |> resp(403, "Forbidden") |> halt
       end
 
+      @doc """
+      Get the current user from session and the ticket from the query string
+      """
+      def user_or_token(conn, _options) do
+        {get_session(conn, "cas_user"), Map.fetch(conn.query_params, "ticket")}
+      end
+
+      @doc """
+      Stores the current user in the session under the `cas_user` key
+      """
+      def user_authenticated(conn, user, _options) do
+        conn |> put_session("cas_user", user)
+      end
+
       @spec url(Plug.Conn.t, term) :: String.t
       @doc """
       Computes the service from the URL requested in the `conn` argument.
@@ -136,7 +155,7 @@ defmodule Cassette.Plug.AuthenticationHandler do
       defp url_port_string(%Plug.Conn{port: 443, scheme: :https}), do: ""
       defp url_port_string(conn = %Plug.Conn{}), do: ":#{conn.port}"
 
-      defoverridable [init: 1, authentication_token: 2, service: 2, unauthenticated: 2, invalid_authentication: 2]
+      defoverridable [init: 1, user_or_token: 2, service: 2, unauthenticated: 2, invalid_authentication: 2]
     end
   end
 end

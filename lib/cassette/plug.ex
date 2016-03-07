@@ -75,12 +75,12 @@ defmodule Cassette.Plug do
     cassette = Keyword.get(options, :cassette, Cassette)
     handler = Keyword.get(options, :handler, Cassette.Plug.AuthenticationHandler.default)
 
-    case {get_session(conn, "cas_user"), handler.authentication_token(conn, options)} do
+    case handler.user_or_token(conn, options) do
       {%Cassette.User{}, _} -> conn
       {nil, :error} -> handler.unauthenticated(conn, options)
       {nil, {:ok, ticket}} ->
         case cassette.validate(ticket, handler.service(conn, options)) do
-          {:ok, user} -> put_session(conn, "cas_user", user)
+          {:ok, user} -> handler.user_authenticated(conn, user, options)
           _ -> handler.invalid_authentication(conn, options)
         end
     end
