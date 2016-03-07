@@ -1,4 +1,4 @@
-%{"cassette": {:git, "https://code.locaweb.com.br/elixir/cassette.git", "ce89764d6df2028cc322c5b2d751f8eb8188783f", []},
+%{"cassette": {:hex, :cassette, "1.0.0"},
   "certifi": {:hex, :certifi, "0.3.0"},
   "dialyze": {:hex, :dialyze, "0.2.0"},
   "earmark": {:hex, :earmark, "0.2.1"},

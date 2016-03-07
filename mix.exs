@@ -31,7 +31,7 @@ defmodule Cassette.Plug.Mixfile do
       {:ex_doc, "~> 0.11", only: :dev},
       {:earmark, "~> 0.1", only: :dev},
       {:dialyze, "~> 0.2", only: :test},
-      {:cassette, "~> 0.0", git: "https://code.locaweb.com.br/elixir/cassette.git"},
+      {:cassette, "~> 1.0"},
       {:plug, "~> 1.0"},
     ]
   end

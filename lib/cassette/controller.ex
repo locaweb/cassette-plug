@@ -57,18 +57,32 @@ defmodule Cassette.Controller do
 
   ```
 
+  You can use one of your controller functions as well:
+
+  ```elixir
+
+  defmodule MyApp.MyController do
+    use MyApp.Web, :controller
+    use Cassette.Controller, on_forbidden: &MyApp.MyController.forbidden/1
+
+    plug :require_role!("VIEWER")
+
+    def index(conn, _params) do
+      render(conn, "index.html")
+    end
+  end
+
+  ```
+
   """
 
-  defmacro __using__(options \\ []) do
-    quote bind_quoted: [opts: options] do
-      @cassette Keyword.get(opts, :cassette)
-      @forbidden_callback Keyword.get(opts, :on_forbidden)
-
+  defmacro __using__(opts \\ []) do
+    quote do
       import Plug.Conn
 
-      defp __config__, do: (@cassette || Cassette).config
+      defp __config__, do: (unquote(opts[:cassette]) || Cassette).config
 
-      defp __forbidden_callback__, do: @forbidden_callback || fn(conn) ->
+      defp __forbidden_callback__, do: unquote(opts[:on_forbidden]) || fn(conn) ->
         conn |> resp(403, "Forbidden") |> halt
       end
 
