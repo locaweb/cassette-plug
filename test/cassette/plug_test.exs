@@ -34,7 +34,7 @@ defmodule Cassette.PlugTest do
   test "call/2 with no user in session and no ticket redirects to auth", %{conn: conn} do
     assert %Plug.Conn{status: 307, halted: true, resp_headers: headers} = Cassette.Plug.call(conn, [cassette: CassetteMock])
 
-    assert Enum.member?(headers, {"location", "#{CassetteMock.config.base_url}/login?service=http://www.example.com:80/"})
+    assert Enum.member?(headers, {"location", "#{CassetteMock.config.base_url}/login?service=http://www.example.com/"})
   end
 
   @tag session: true
