@@ -21,13 +21,22 @@ defmodule Cassette.Plug.DefaultHandler do
   It will remove the `ticket` from the query string paramaters since the ticket has not been generated with it.
   """
   def url(conn, _options) do
-    query_string =
-      conn.query_params
-      |> Enum.reject(fn({k, _}) -> k == "ticket" end)
-      |> URI.encode_query
-
-    ["#{conn.scheme}://#{conn.host}:#{conn.port}#{conn.request_path}", query_string]
+    ["#{conn.scheme}://#{conn.host}#{url_port_string(conn)}#{conn.request_path}", query_string(conn)]
     |> Enum.reject(fn(v) -> is_nil(v) || v == "" end)
     |> Enum.join("?")
   end
+
+  defp query_string(conn = %Plug.Conn{query_params: %Plug.Conn.Unfetched{aspect: :query_params}}) do
+    query_string(conn |> Plug.Conn.fetch_query_params)
+  end
+
+  defp query_string(conn) do
+    conn.query_params
+    |> Enum.reject(fn({k, _}) -> k == "ticket" end)
+    |> URI.encode_query
+  end
+
+  defp url_port_string(%Plug.Conn{port: 80, scheme: :http}), do: ""
+  defp url_port_string(%Plug.Conn{port: 443, scheme: :https}), do: ""
+  defp url_port_string(conn = %Plug.Conn{}), do: ":#{conn.port}"
 end
