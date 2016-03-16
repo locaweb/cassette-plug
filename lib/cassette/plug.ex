@@ -53,15 +53,6 @@ defmodule Cassette.Plug do
   @doc "Initializes this plug"
   def init(options), do: options
 
-  @spec service(Plug.Conn.t, term) :: String.t
-  @doc """
-  Fetches the service from the configuration of provided `:cassette` or the default `Cassette` module.
-  """
-  def service(_conn, options) do
-    cassette = Keyword.get(options, :cassette, Cassette)
-    cassette.config.service
-  end
-
   @type options :: [cassette: Cassette.Support, handler: Cassette.Plug.AuthenticationHandler]
   @spec call(Plug.Conn.t, options) :: Plug.Conn.t
   @doc """

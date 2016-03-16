@@ -18,18 +18,6 @@ defmodule Cassette.PlugTest do
     end
   end
 
-  test "service/2 returns the configured service from the default Cassette client if not provided" do
-    conn = %Plug.Conn{}
-
-    assert Cassette.config.service == Cassette.Plug.service(conn, [])
-  end
-
-  test "service/2 returns the configued service from the provided Cassette client" do
-    conn = %Plug.Conn{}
-
-    assert CassetteMock.config.service == Cassette.Plug.service(conn, [cassette: CassetteMock])
-  end
-
   @tag session: true
   test "call/2 with no user in session and no ticket redirects to auth", %{conn: conn} do
     assert %Plug.Conn{status: 307, halted: true, resp_headers: headers} = Cassette.Plug.call(conn, [cassette: CassetteMock])
