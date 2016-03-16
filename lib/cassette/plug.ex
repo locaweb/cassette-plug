@@ -40,9 +40,14 @@ defmodule Cassette.Plug do
   ```
 
   Be sure that is module is plugged after the `:fetch_session` plug since this is a requirement
-  """
 
-  import Plug.Conn
+
+  ## Customizing behaviour
+
+  The behaviour for authentication failures may be customized using your own `Cassette.Plug.AuthenticationHandler`.
+  Please refer to the documentation on that module for more details.
+
+  """
 
   @spec init([]) :: []
   @doc "Initializes this plug"
@@ -57,7 +62,7 @@ defmodule Cassette.Plug do
     cassette.config.service
   end
 
-  @type options :: [cassette: Cassette.Support, handler: Cassette.Plug.DefaultHandler]
+  @type options :: [cassette: Cassette.Support, handler: Cassette.Plug.AuthenticationHandler]
   @spec call(Plug.Conn.t, options) :: Plug.Conn.t
   @doc """
   Runs this plug.
@@ -66,14 +71,14 @@ defmodule Cassette.Plug do
   """
   def call(conn, options) do
     cassette = Keyword.get(options, :cassette, Cassette)
-    handler = Keyword.get(options, :handler, Cassette.Plug.DefaultHandler)
+    handler = Keyword.get(options, :handler, Cassette.Plug.AuthenticationHandler.default)
 
-    case {get_session(conn, "cas_user"), conn.query_params["ticket"]} do
+    case handler.user_or_token(conn, options) do
       {%Cassette.User{}, _} -> conn
-      {nil, nil} -> handler.unauthenticated(conn, options)
-      {nil, ticket} ->
+      {nil, :error} -> handler.unauthenticated(conn, options)
+      {nil, {:ok, ticket}} ->
         case cassette.validate(ticket, handler.service(conn, options)) do
-          {:ok, user} -> put_session(conn, "cas_user", user)
+          {:ok, user} -> handler.user_authenticated(conn, user, options)
           _ -> handler.invalid_authentication(conn, options)
         end
     end
