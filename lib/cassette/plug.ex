@@ -49,8 +49,6 @@ defmodule Cassette.Plug do
 
   """
 
-  import Plug.Conn
-
   @spec init([]) :: []
   @doc "Initializes this plug"
   def init(options), do: options
