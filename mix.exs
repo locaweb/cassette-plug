@@ -33,7 +33,7 @@ defmodule Cassette.Plug.Mixfile do
        maintainers: ["Ricardo Hermida Ruiz"],
        licenses: ["MIT"],
        links: %{"GitHub" => "https://github.com/locaweb/cassette-plug",
-                "Docs" => "https://hexdocs.pm/cassette-plug/#{version}"}]
+                "Docs" => "https://hexdocs.pm/cassette_plug/#{version}"}]
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
