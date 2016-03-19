@@ -84,13 +84,6 @@ defmodule Cassette.Plug.AuthenticationHandler do
       def init(options), do: options
 
       @doc """
-      Extracts the `ticket` from the query_string in `conn`
-      """
-      def authentication_token(conn, _options) do
-        Map.fetch(conn.query_params, "ticket")
-      end
-
-      @doc """
       Builds the current request url to be used as the CAS service
       """
       def service(conn, options) do
@@ -155,7 +148,7 @@ defmodule Cassette.Plug.AuthenticationHandler do
       defp url_port_string(%Plug.Conn{port: 443, scheme: :https}), do: ""
       defp url_port_string(conn = %Plug.Conn{}), do: ":#{conn.port}"
 
-      defoverridable [init: 1, user_or_token: 2, service: 2, unauthenticated: 2, invalid_authentication: 2]
+      defoverridable [init: 1, user_or_token: 2, service: 2, unauthenticated: 2, invalid_authentication: 2, user_authenticated: 3]
     end
   end
 end
