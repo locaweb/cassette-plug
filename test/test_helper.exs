@@ -1,2 +1,2 @@
 ExUnit.start()
-Plug.Supervisor.start_link()
+Application.start(:plug)
