@@ -5,8 +5,8 @@ defmodule Cassette.ControllerTest do
   import TestController
 
   setup tags do
-    session_opts = Plug.Session.init(store: :cookie, key: "_palantir_key",
-                                 encryption_salt: "As34Atb", signing_salt: "eTcLslAt")
+    session_opts = Plug.Session.init(store: :cookie, key: "_session_key",
+     signing_salt: "abcd1234", encryption_salt: "efgh5678")
 
     user = if tags[:with_user] do
       CassetteMock.valid_user
@@ -15,6 +15,7 @@ defmodule Cassette.ControllerTest do
     end
 
     conn = conn(:get, tags[:path] || "/", tags[:body] || %{})
+    |> Map.put(:secret_key_base, Application.get_env(:cassette_plug, :secret_key_base))
     |> Plug.Session.call(session_opts)
     |> Plug.Conn.fetch_session()
     |> Plug.Conn.fetch_query_params()
@@ -73,6 +74,11 @@ defmodule Cassette.ControllerTest do
   @tag with_user: true
   test "require_role!/2 halts the connection when user does not have the role", %{conn: conn} do
     assert %Plug.Conn{halted: true, status: 403} = conn |> require_role!("SOME_WEIRD_ROLE")
+  end
+
+  @tag with_user: true
+  test "require_role!/2 calls the `on_forbidden` callback", %{conn: conn} do
+    assert %Plug.Conn{status: 403, resp_body: "you cannot"} = conn |> require_role!("SOME_WEIRD_ROLE")
   end
 
   @tag with_user: true
@@ -135,5 +141,10 @@ defmodule Cassette.ControllerTest do
   @tag with_user: true
   test "require_raw_role!/2 does not halt the connection when user has the role", %{conn: conn} do
     assert %Plug.Conn{halted: false} = conn |> require_raw_role!("ACME_ADMIN")
+  end
+
+  @tag with_user: true
+  test "require_raw_role!/2 calls the `on_forbidden` callback", %{conn: conn} do
+    assert %Plug.Conn{status: 403, resp_body: "you cannot"} = conn |> require_raw_role!("SOME_WEIRD_ROLE")
   end
 end
