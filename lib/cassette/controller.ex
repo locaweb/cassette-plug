@@ -59,8 +59,6 @@ defmodule Cassette.Controller do
 
   Or since `require_role!/2` halts the connection you may do the following for simple actions.
 
-  **NOTE**: Phoenixe's `render/2` does not check for halted `conn`s so doing the following will crash your `Endpoint` when authorization fails
-
   ```elixir
 
   defmodule MyApp.MyController do

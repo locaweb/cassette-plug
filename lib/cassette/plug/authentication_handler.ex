@@ -103,7 +103,7 @@ defmodule Cassette.Plug.AuthenticationHandler do
       Renders a Forbidden response
       """
       def invalid_authentication(conn, _options) do
-        conn |> resp(403, "Forbidden") |> halt
+        conn |> send_resp(403, "Forbidden") |> halt
       end
 
       @doc """
