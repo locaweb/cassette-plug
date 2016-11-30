@@ -89,7 +89,7 @@ defmodule Cassette.Controller do
     end
 
     def check_authorization(conn, _params) do
-      if has_role?("viewer") do
+      if has_role?(conn, "viewer") do
         conn
       else
         conn |> render("forbidden.html") |> halt
