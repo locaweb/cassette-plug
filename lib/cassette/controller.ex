@@ -134,7 +134,7 @@ defmodule Cassette.Controller do
       @spec has_role?(Plug.Conn.t, [String.t]) :: boolean
       def has_role?(conn, roles) when is_list(roles) do
         user = current_user(conn)
-        Enum.any?(roles, &Cassette.User.has_role?(user, __config__, &1))
+        Enum.any?(roles, &Cassette.User.has_role?(user, __config__(), &1))
       end
 
       @spec has_role?(Plug.Conn.t, ((Plug.Conn.t) -> String.t)) :: boolean
@@ -178,7 +178,7 @@ defmodule Cassette.Controller do
         if has_role?(conn, roles) do
           conn
         else
-          __forbidden_callback__.(conn)
+          __forbidden_callback__().(conn)
         end
       end
 
@@ -192,7 +192,7 @@ defmodule Cassette.Controller do
         if has_raw_role?(conn, roles) do
           conn
         else
-          __forbidden_callback__.(conn)
+          __forbidden_callback__().(conn)
         end
       end
     end

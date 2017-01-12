@@ -6,7 +6,7 @@ defmodule Cassette.ControllerTest do
 
   setup tags do
     session_opts = Plug.Session.init(store: :cookie, key: "_session_key",
-     signing_salt: "abcd1234", encryption_salt: "efgh5678")
+      max_age: 24 * 3600, signing_salt: "abcd1234", encryption_salt: "efgh5678")
 
     user = if tags[:with_user] do
       CassetteMock.valid_user

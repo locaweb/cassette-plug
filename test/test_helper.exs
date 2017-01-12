@@ -1,2 +1,2 @@
 ExUnit.start()
-Application.start(:plug)
+Application.ensure_all_started(:plug)
