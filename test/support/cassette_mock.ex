@@ -19,10 +19,10 @@ defmodule CassetteMock do
   end
 
   def validate(@valid_ticket, _service) do
-    {:ok, valid_user}
+    {:ok, valid_user()}
   end
 
   def validate(@invalid_ticket, _service) do
-    {:fail, "something is wrong"}
+    {:error, "something is wrong"}
   end
 end
