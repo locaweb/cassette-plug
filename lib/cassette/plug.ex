@@ -41,7 +41,6 @@ defmodule Cassette.Plug do
 
   Be sure that is module is plugged after the `:fetch_session` plug since this is a requirement
 
-
   ## Customizing behaviour
 
   The behaviour for authentication failures may be customized using your own `Cassette.Plug.AuthenticationHandler`.
@@ -51,11 +50,13 @@ defmodule Cassette.Plug do
 
   require Logger
 
+  alias Cassette.Plug.AuthenticationHandler
+
   @spec init([]) :: []
   @doc "Initializes this plug"
   def init(options), do: options
 
-  @type options :: [cassette: Cassette.Support, handler: Cassette.Plug.AuthenticationHandler]
+  @type options :: [cassette: Cassette.Support, handler: AuthenticationHandler]
   @spec call(Plug.Conn.t, options) :: Plug.Conn.t
   @doc """
   Runs this plug.
@@ -64,7 +65,7 @@ defmodule Cassette.Plug do
   """
   def call(conn, options) do
     cassette = Keyword.get(options, :cassette, Cassette)
-    handler = Keyword.get(options, :handler, Cassette.Plug.AuthenticationHandler.default)
+    handler = Keyword.get(options, :handler, AuthenticationHandler.default)
 
     case handler.user_or_token(conn, options) do
       {%Cassette.User{}, _} -> conn

@@ -99,12 +99,14 @@ defmodule Cassette.Controller do
 
   ```
 
-
   """
+
+  alias Cassette.User
+  alias Plug.Conn
 
   defmacro __using__(opts \\ []) do
     quote do
-      import Plug.Conn
+      import Conn
 
       defp __config__, do: (unquote(opts[:cassette]) || Cassette).config
 
@@ -112,7 +114,7 @@ defmodule Cassette.Controller do
         conn |> resp(403, "Forbidden") |> halt
       end
 
-      @spec current_user(Plug.Conn.t) :: Cassette.User.t | nil
+      @spec current_user(Conn.t) :: User.t | nil
       @doc """
       Fetches the current user from the session.
 
@@ -131,18 +133,18 @@ defmodule Cassette.Controller do
 
       Returns `false` if there is no user in the session.
       """
-      @spec has_role?(Plug.Conn.t, [String.t]) :: boolean
+      @spec has_role?(Conn.t, [String.t]) :: boolean
       def has_role?(conn, roles) when is_list(roles) do
         user = current_user(conn)
-        Enum.any?(roles, &Cassette.User.has_role?(user, __config__(), &1))
+        Enum.any?(roles, &User.has_role?(user, __config__(), &1))
       end
 
-      @spec has_role?(Plug.Conn.t, ((Plug.Conn.t) -> String.t)) :: boolean
+      @spec has_role?(Conn.t, ((Conn.t) -> String.t)) :: boolean
       def has_role?(conn, role_fn) when is_function(role_fn, 1) do
         has_role?(conn, role_fn.(conn))
       end
 
-      @spec has_role?(Plug.Conn.t, String.t) :: boolean
+      @spec has_role?(Conn.t, String.t) :: boolean
       def has_role?(conn, role) do
         has_role?(conn, [role])
       end
@@ -152,23 +154,24 @@ defmodule Cassette.Controller do
 
       Arguments follow the same logic as has_role?/2 but they are forwarded to `Cassette.User.has_raw_role?/2`
       """
-      @spec has_raw_role?(Plug.Conn.t, [String.t]) :: boolean
+      @spec has_raw_role?(Conn.t, [String.t]) :: boolean
       def has_raw_role?(conn, roles) when is_list(roles) do
         user = current_user(conn)
-        Enum.any?(roles, &Cassette.User.has_raw_role?(user, &1))
+        Enum.any?(roles, &User.has_raw_role?(user, &1))
       end
 
-      @spec has_raw_role?(Plug.Conn.t, ((Plug.Conn.t) -> String.t)) :: boolean
+      @spec has_raw_role?(Conn.t, ((Conn.t) -> String.t)) :: boolean
       def has_raw_role?(conn, role_fn) when is_function(role_fn, 1) do
         has_raw_role?(conn, role_fn.(conn))
       end
 
-      @spec has_raw_role?(Plug.Conn.t, String.t) :: boolean
+      @spec has_raw_role?(Conn.t, String.t) :: boolean
       def has_raw_role?(conn, role) do
         has_raw_role?(conn, [role])
       end
 
-      @spec require_role!(Plug.Conn.t, String.t | [String.t] | ((Plug.Conn.t) -> String.t)) :: Plug.Conn.t
+      @spec require_role!(Conn.t,
+        String.t | [String.t] | ((Conn.t) -> String.t)) :: Conn.t
       @doc """
       Tests if the user has the role. Where role can be any of the terms accepted by any implementation of `has_role?/2`.
 
@@ -182,12 +185,13 @@ defmodule Cassette.Controller do
         end
       end
 
-      @spec require_raw_role!(Plug.Conn.t, String.t | [String.t] | ((Plug.Conn.t) -> String.t)) :: Plug.Conn.t
       @doc """
       Tests if the user has the (raw) role. Where role can be any of the terms accepted by any implementation of `has_raw_role?/2`.
 
       This will halt the connection and set the status to forbidden if authorization fails.
       """
+      @spec require_raw_role!(Conn.t,
+        String.t | [String.t] | ((Conn.t) -> String.t)) :: Conn.t
       def require_raw_role!(conn, roles) do
         if has_raw_role?(conn, roles) do
           conn
