@@ -49,6 +49,8 @@ defmodule Cassette.Plug do
 
   """
 
+  require Logger
+
   @spec init([]) :: []
   @doc "Initializes this plug"
   def init(options), do: options
@@ -70,7 +72,9 @@ defmodule Cassette.Plug do
       {nil, {:ok, ticket}} ->
         case cassette.validate(ticket, handler.service(conn, options)) do
           {:ok, user} -> handler.user_authenticated(conn, user, options)
-          _ -> handler.invalid_authentication(conn, options)
+          {:error, reason} ->
+            Logger.error("Validation of #{inspect(ticket)} failed: #{inspect(reason)}")
+            handler.invalid_authentication(conn, options)
         end
     end
   end
