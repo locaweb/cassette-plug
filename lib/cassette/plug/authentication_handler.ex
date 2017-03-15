@@ -71,10 +71,10 @@ defmodule Cassette.Plug.AuthenticationHandler do
   @callback user_authenticated(conn :: Conn.t,
     user :: Cassette.User.t, options :: term) :: Conn.t
 
-  @spec default :: Cassette.Plug.AuthenticationHandler
   @doc """
   Returns the default implementation for this behaviour
   """
+  @spec default :: Cassette.Plug.AuthenticationHandler
   def default do
     Cassette.Plug.DefaultHandler
   end
@@ -132,11 +132,11 @@ defmodule Cassette.Plug.AuthenticationHandler do
         conn |> put_session("cas_user", user)
       end
 
-      @spec url(Conn.t, term) :: String.t
       @doc """
       Computes the service from the URL requested in the `conn` argument.
       It will remove the `ticket` from the query string paramaters since the ticket has not been generated with it.
       """
+      @spec url(Conn.t, term) :: String.t
       def url(conn, _options) do
         ["#{conn.scheme}://#{conn.host}#{url_port_string(conn)}#{conn.request_path}", query_string(conn)]
         |> Enum.reject(fn(v) -> is_nil(v) || v == "" end)
@@ -144,7 +144,6 @@ defmodule Cassette.Plug.AuthenticationHandler do
       end
 
       @spec query_string(Conn.t) :: String.t
-
       defp query_string(conn = %Conn{query_params: %Conn.Unfetched{aspect: :query_params}}) do
         query_string(conn |> Conn.fetch_query_params)
       end

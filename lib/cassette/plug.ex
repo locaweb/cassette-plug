@@ -51,18 +51,20 @@ defmodule Cassette.Plug do
   require Logger
 
   alias Cassette.Plug.AuthenticationHandler
+  alias Plug.Conn
+
+  @type options :: [cassette: Cassette.Support, handler: AuthenticationHandler]
 
   @spec init([]) :: []
   @doc "Initializes this plug"
   def init(options), do: options
 
-  @type options :: [cassette: Cassette.Support, handler: AuthenticationHandler]
-  @spec call(Plug.Conn.t, options) :: Plug.Conn.t
   @doc """
   Runs this plug.
 
   Your custom Cassette module may be provided with the `:cassette` key. It will default to the `Cassette` module.
   """
+  @spec call(Conn.t, options) :: Conn.t
   def call(conn, options) do
     cassette = Keyword.get(options, :cassette, Cassette)
     handler = Keyword.get(options, :handler, AuthenticationHandler.default)
