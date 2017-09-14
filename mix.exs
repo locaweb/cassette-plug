@@ -6,7 +6,7 @@ defmodule Cassette.Plug.Mixfile do
   def project do
     [app: :cassette_plug,
      version: version(),
-     elixir: "~> 1.2",
+     elixir: "~> 1.3",
      description: "An auth Plug using Cassette",
      elixirc_paths: elixirc_paths(Mix.env),
      package: package(),
@@ -17,6 +17,10 @@ defmodule Cassette.Plug.Mixfile do
      docs: [
        extras: ["README.md", "CONTRIBUTING.md"],
      ],
+     test_coverage: [tool: ExCoveralls],
+     preferred_cli_env: ["coveralls": :test,
+                         "coveralls.detail": :test,
+                         "coveralls.html": :test],
      deps: deps()]
   end
 
@@ -47,6 +51,7 @@ defmodule Cassette.Plug.Mixfile do
       {:cassette, "~> 1.0"},
       {:credo, "~> 0.5", only: [:dev, :test]},
       {:plug, "~> 1.0"},
+      {:excoveralls, "~> 0.7", only: :test}
     ]
   end
 end
