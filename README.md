@@ -2,6 +2,8 @@
 
 A Plug to authenticate and authorize users based on Cassette
 
+![Build status](https://travis-ci.org/locaweb/cassette-plug.svg?branch=master)
+
 ## Installation
 
 The package can be installed as:
