@@ -48,10 +48,13 @@ defmodule Cassette.Plug do
 
   """
 
+  @behaviour Plug
+
   require Logger
 
   alias Cassette.Plug.AuthenticationHandler
   alias Plug.Conn
+  alias Plug.Builder
 
   @type options :: [cassette: Cassette.Support, handler: AuthenticationHandler]
 
@@ -79,6 +82,12 @@ defmodule Cassette.Plug do
             Logger.error("Validation of #{inspect(ticket)} failed: #{inspect(reason)}")
             handler.invalid_authentication(conn, options)
         end
+    end
+  end
+
+  defmacro require_role(options) do
+    quote do
+      Builder.plug(Cassette.Plug.RequireRolePlug, unquote(options))
     end
   end
 end
