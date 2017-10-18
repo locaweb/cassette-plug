@@ -1,4 +1,8 @@
 defmodule CassetteMock do
+  @moduledoc """
+  Test helper module with Cassette-related utility functions
+  """
+
   @valid_ticket "ST-a-valid-ticket"
   @invalid_ticket "ST-an-invalid-ticket"
 

@@ -6,18 +6,20 @@ defmodule Cassette.PlugTest do
 
   setup tags do
     if tags[:session] do
-      session_opts = Plug.Session.init(store: :cookie, key: "_session_key",
-                                   encryption_salt: "NaCl", signing_salt: "KCl")
-
-      conn = conn(:get, tags[:path] || "/", tags[:body] || %{})
-      |> Plug.Session.call(session_opts)
-      |> Plug.Conn.fetch_session()
-      |> Plug.Conn.fetch_query_params()
+      conn =
+        :get
+        |> conn(tags[:path] || "/", tags[:body] || %{})
+        |> init_test_session([])
+        |> Plug.Conn.fetch_query_params()
 
       {:ok, conn: conn}
     else
       :ok
     end
+  end
+
+  test "init/1 returns a keyword" do
+    assert [] = Cassette.Plug.init([])
   end
 
   @tag session: true
