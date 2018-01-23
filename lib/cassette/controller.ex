@@ -107,11 +107,13 @@ defmodule Cassette.Controller do
   defmacro __using__(opts \\ []) do
     quote do
       import Conn
-      import Cassette.Plug.RequireRolePlug, only: [has_role?: 3,
-                                                   has_raw_role?: 2]
+      import Cassette.Plug.RequireRolePlug, only: [has_role?: 3, has_raw_role?: 2]
 
-      defp __forbidden_callback__, do: unquote(opts[:on_forbidden]) || fn(conn) ->
-        conn |> resp(403, "Forbidden") |> halt
+      defp __forbidden_callback__ do
+        unquote(opts[:on_forbidden]) ||
+          fn conn ->
+            conn |> resp(403, "Forbidden") |> halt
+          end
       end
 
       @doc """
@@ -119,7 +121,7 @@ defmodule Cassette.Controller do
 
       This will halt the connection and set the status to forbidden if authorization fails.
       """
-      @spec require_role!(Conn.t, RequireRolePlug.role_param) :: Conn.t
+      @spec require_role!(Conn.t(), RequireRolePlug.role_param()) :: Conn.t()
       def require_role!(conn, roles) do
         if has_role?(conn, roles, unquote(opts)) do
           conn
@@ -133,7 +135,7 @@ defmodule Cassette.Controller do
 
       This will halt the connection and set the status to forbidden if authorization fails.
       """
-      @spec require_raw_role!(Conn.t, RequireRolePlug.role_param) :: Conn.t
+      @spec require_raw_role!(Conn.t(), RequireRolePlug.role_param()) :: Conn.t()
       def require_raw_role!(conn, roles) do
         if has_raw_role?(conn, roles) do
           conn

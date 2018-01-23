@@ -53,6 +53,7 @@ defmodule Cassette.Plug do
   require Logger
 
   alias Cassette.Plug.AuthenticationHandler
+  alias Cassette.User
   alias Plug.Conn
   alias Plug.Builder
 
@@ -67,17 +68,23 @@ defmodule Cassette.Plug do
 
   Your custom Cassette module may be provided with the `:cassette` key. It will default to the `Cassette` module.
   """
-  @spec call(Conn.t, options) :: Conn.t
+  @spec call(Conn.t(), options) :: Conn.t()
   def call(conn, options) do
     cassette = Keyword.get(options, :cassette, Cassette)
-    handler = Keyword.get(options, :handler, AuthenticationHandler.default)
+    handler = Keyword.get(options, :handler, AuthenticationHandler.default())
 
     case handler.user_or_token(conn, options) do
-      {%Cassette.User{}, _} -> conn
-      {nil, :error} -> handler.unauthenticated(conn, options)
+      {%User{}, _} ->
+        conn
+
+      {nil, :error} ->
+        handler.unauthenticated(conn, options)
+
       {nil, {:ok, ticket}} ->
         case cassette.validate(ticket, handler.service(conn, options)) do
-          {:ok, user} -> handler.user_authenticated(conn, user, options)
+          {:ok, user} ->
+            handler.user_authenticated(conn, user, options)
+
           {:error, reason} ->
             Logger.error("Validation of #{inspect(ticket)} failed: #{inspect(reason)}")
             handler.invalid_authentication(conn, options)
