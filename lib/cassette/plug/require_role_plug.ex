@@ -10,7 +10,7 @@ defmodule Cassette.Plug.RequireRolePlug do
   alias Cassette.User
   alias Plug.Conn
 
-  @type role_param :: String.t | [String.t] | (Conn.t -> String.t)
+  @type role_param :: String.t() | [String.t()] | (Conn.t() -> String.t())
 
   def init(opts) do
     _role = Keyword.fetch!(opts, :role)
@@ -23,7 +23,7 @@ defmodule Cassette.Plug.RequireRolePlug do
 
   Returns `nil` if has no user
   """
-  @spec current_user(Conn.t) :: User.t | nil
+  @spec current_user(Conn.t()) :: User.t() | nil
   def current_user(conn) do
     conn |> fetch_session |> get_session("cas_user")
   end
@@ -43,7 +43,7 @@ defmodule Cassette.Plug.RequireRolePlug do
 
   Returns `false` if there is no user in the session.
   """
-  @spec role?(Conn.t, role_param, Keyword.t) :: boolean
+  @spec role?(Conn.t(), role_param, Keyword.t()) :: boolean
   def role?(conn, roles, opts) when is_list(roles) do
     user = current_user(conn)
     Enum.any?(roles, &User.has_role?(user, __config__(opts), &1))
@@ -64,7 +64,7 @@ defmodule Cassette.Plug.RequireRolePlug do
 
   Arguments follow the same logic as role?/2 but they are forwarded to `Cassette.User.has_raw_role?/2`
   """
-  @spec raw_role?(Conn.t, role_param) :: boolean
+  @spec raw_role?(Conn.t(), role_param) :: boolean
   def raw_role?(conn, roles) when is_list(roles) do
     user = current_user(conn)
     Enum.any?(roles, &User.has_raw_role?(user, &1))
@@ -84,9 +84,10 @@ defmodule Cassette.Plug.RequireRolePlug do
     if role?(conn, role, opts) do
       conn
     else
-      (opts[:on_forbidden] || (fn(c) ->
-        c |> resp(403, "Forbidden") |> halt
-      end)).(conn)
+      (opts[:on_forbidden] ||
+         fn c ->
+           c |> resp(403, "Forbidden") |> halt
+         end).(conn)
     end
   end
 end

@@ -50,7 +50,6 @@ defmodule Cassette.Plug.Mixfile do
       {:dialyze, "~> 0.2", only: :test},
       {:cassette, "~> 1.0"},
       {:credo, "~> 0.5", only: [:dev, :test], runtime: false},
-      {:dogma, "~> 0.1", only: [:dev, :test], runtime: false},
       {:plug, "~> 1.0"},
       {:excoveralls, "~> 0.7", only: :test}
     ]
