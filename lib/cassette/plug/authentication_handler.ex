@@ -44,7 +44,7 @@ defmodule Cassette.Plug.AuthenticationHandler do
 
   Usually this is the URL of the page the user is trying to access and may be computed using values in `conn`
   """
-  @callback service(conn :: Conn.t(), options :: term) :: Conn.t()
+  @callback service(conn :: Conn.t(), options :: term) :: String.t()
 
   @doc """
   Called when there is no authentication in the request (i.e., no `ticket` in the query string).
