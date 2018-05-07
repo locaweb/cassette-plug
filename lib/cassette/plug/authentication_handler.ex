@@ -91,7 +91,7 @@ defmodule Cassette.Plug.AuthenticationHandler do
       @doc """
       Builds the current request url to be used as the CAS service
       """
-      @spec service(conn :: Conn.t(), options :: term) :: Conn.t()
+      @spec service(conn :: Conn.t(), options :: term) :: String.t()
       def service(conn, options) do
         url(conn, options)
       end
