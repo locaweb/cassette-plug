@@ -57,7 +57,7 @@ defmodule Cassette.Plug do
   alias Plug.Conn
   alias Plug.Builder
 
-  @type options :: [cassette: Cassette.Support, handler: AuthenticationHandler]
+  @type options :: [cassette: module(), handler: module()]
 
   @spec init([]) :: []
   @doc "Initializes this plug"
