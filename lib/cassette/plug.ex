@@ -43,7 +43,8 @@ defmodule Cassette.Plug do
 
   ## Customizing behaviour
 
-  The behaviour for authentication failures may be customized using your own `Cassette.Plug.AuthenticationHandler`.
+  The behaviour for authentication failures may be customized using your own
+  `Cassette.Plug.AuthenticationHandler`.
   Please refer to the documentation on that module for more details.
 
   """
@@ -53,11 +54,12 @@ defmodule Cassette.Plug do
   require Logger
 
   alias Cassette.Plug.AuthenticationHandler
+  alias Cassette.Support
   alias Cassette.User
   alias Plug.Conn
   alias Plug.Builder
 
-  @type options :: [cassette: module(), handler: module()]
+  @type options :: [cassette: Support.t(), handler: AuthenticationHandler.t()]
 
   @spec init([]) :: []
   @doc "Initializes this plug"
@@ -66,7 +68,8 @@ defmodule Cassette.Plug do
   @doc """
   Runs this plug.
 
-  Your custom Cassette module may be provided with the `:cassette` key. It will default to the `Cassette` module.
+  Your custom Cassette module may be provided with the `:cassette` key. It will default to the
+  `Cassette` module.
   """
   @spec call(Conn.t(), options) :: Conn.t()
   def call(conn, options) do

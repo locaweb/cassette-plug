@@ -1,6 +1,6 @@
 %{
   "bunt": {:hex, :bunt, "0.2.0", "951c6e801e8b1d2cbe58ebbd3e616a869061ddadcc4863d0a2182541acae9a38", [:mix], [], "hexpm"},
-  "cassette": {:hex, :cassette, "1.4.0", "181bc74b583679b873b49877e72f690ff4e3237a6f66ed0433979c2c2f73776f", [:mix], [{:httpoison, "~> 0.8 or ~> 1.0", [hex: :httpoison, repo: "hexpm", optional: false]}, {:sweet_xml, "~> 0.6.0", [hex: :sweet_xml, repo: "hexpm", optional: false]}], "hexpm"},
+  "cassette": {:hex, :cassette, "1.4.1", "85f5f7e82078b7e3322ba7684e936ce79bf74e8ce95e1c5439e7d3d2227c5c41", [:mix], [{:httpoison, "~> 0.8 or ~> 1.0", [hex: :httpoison, repo: "hexpm", optional: false]}, {:sweet_xml, "~> 0.6.0", [hex: :sweet_xml, repo: "hexpm", optional: false]}], "hexpm"},
   "certifi": {:hex, :certifi, "2.3.1", "d0f424232390bf47d82da8478022301c561cf6445b5b5fb6a84d49a9e76d2639", [:rebar3], [{:parse_trans, "3.2.0", [hex: :parse_trans, repo: "hexpm", optional: false]}], "hexpm"},
   "credo": {:hex, :credo, "0.8.10", "261862bb7363247762e1063713bb85df2bbd84af8d8610d1272cd9c1943bba63", [:mix], [{:bunt, "~> 0.2.0", [hex: :bunt, repo: "hexpm", optional: false]}], "hexpm"},
   "dialyze": {:hex, :dialyze, "0.2.1", "9fb71767f96649020d769db7cbd7290059daff23707d6e851e206b1fdfa92f9d", [], [], "hexpm"},

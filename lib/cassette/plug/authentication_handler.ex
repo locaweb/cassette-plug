@@ -32,6 +32,8 @@ defmodule Cassette.Plug.AuthenticationHandler do
   alias Cassette.User
   alias Plug.Conn
 
+  @type t :: module()
+
   @doc """
   Initializes this handler with the given options.
 
@@ -74,7 +76,7 @@ defmodule Cassette.Plug.AuthenticationHandler do
   @doc """
   Returns the default implementation for this behaviour
   """
-  @spec default :: Cassette.Plug.AuthenticationHandler
+  @spec default :: Cassette.Plug.AuthenticationHandler.t()
   def default do
     Cassette.Plug.DefaultHandler
   end
