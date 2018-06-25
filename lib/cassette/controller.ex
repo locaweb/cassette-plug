@@ -107,7 +107,9 @@ defmodule Cassette.Controller do
   defmacro __using__(opts \\ []) do
     quote do
       import Conn
-      import Cassette.Plug.RequireRolePlug, only: [has_role?: 3, has_raw_role?: 2]
+
+      import Cassette.Plug.RequireRolePlug,
+        only: [current_user: 1, has_role?: 3, has_raw_role?: 2]
 
       defp __forbidden_callback__ do
         unquote(opts[:on_forbidden]) ||
