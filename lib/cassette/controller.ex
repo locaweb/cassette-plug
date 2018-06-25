@@ -109,7 +109,7 @@ defmodule Cassette.Controller do
       import Conn
 
       import Cassette.Plug.RequireRolePlug,
-        only: [current_user: 1, has_role?: 2, has_role?: 3, has_raw_role?: 2]
+        only: [current_user: 1, has_role?: 3, has_raw_role?: 2]
 
       defp __forbidden_callback__ do
         unquote(opts[:on_forbidden]) ||
@@ -130,6 +130,14 @@ defmodule Cassette.Controller do
         else
           __forbidden_callback__().(conn)
         end
+      end
+
+      @doc """
+      Returns if the user has the role.
+      """
+      @spec has_role?(Conn.t(), RequireRolePlug.role_param()) :: boolean
+      def has_role?(conn, roles) do
+        has_role?(conn, roles, unquote(opts))
       end
 
       @doc """
