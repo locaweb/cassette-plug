@@ -109,7 +109,7 @@ defmodule Cassette.Controller do
       import Conn
 
       import Cassette.Plug.RequireRolePlug,
-        only: [current_user: 1, has_role?: 3, has_raw_role?: 2]
+        only: [current_user: 1, has_role?: 2, has_role?: 3, has_raw_role?: 2]
 
       defp __forbidden_callback__ do
         unquote(opts[:on_forbidden]) ||
