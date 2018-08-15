@@ -31,7 +31,7 @@ defmodule Cassette.Controller do
       redirect(conn, to: "/403.html")
     end
 
-    plug :require_role!("VIEWER")
+    plug :require_role!, "VIEWER"
 
     def index(conn, _params) do
       render(conn, "index.html")
@@ -48,7 +48,7 @@ defmodule Cassette.Controller do
     use MyApp.Web, :controller
     use Cassette.Controller, on_forbidden: &MyApp.MyController.forbidden/1
 
-    plug :require_role!("VIEWER")
+    plug :require_role! "VIEWER"
 
     def index(conn, _params) do
       render(conn, "index.html")
