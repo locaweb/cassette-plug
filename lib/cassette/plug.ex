@@ -56,8 +56,9 @@ defmodule Cassette.Plug do
   alias Cassette.Plug.AuthenticationHandler
   alias Cassette.Support
   alias Cassette.User
-  alias Plug.Conn
+
   alias Plug.Builder
+  alias Plug.Conn
 
   @type options :: [cassette: Support.t(), handler: AuthenticationHandler.t()]
 
