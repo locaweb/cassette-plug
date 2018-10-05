@@ -5,7 +5,7 @@ defmodule Cassette.Plug.DefaultHandlerTest do
   import RemovesTicket
 
   test "url/2 builds the current request url" do
-    conn = %{conn(:get, "/foo?bar=42") | host: "example.org"} |> Plug.Conn.fetch_query_params
+    conn = %{conn(:get, "/foo?bar=42") | host: "example.org"} |> Plug.Conn.fetch_query_params()
 
     assert Cassette.Plug.DefaultHandler.url(conn, []) == "http://example.org/foo?bar=42"
   end

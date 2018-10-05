@@ -92,7 +92,9 @@ defmodule Cassette.Controller do
       if has_role?(conn, "viewer") do
         conn
       else
-        conn |> render("forbidden.html") |> halt
+        conn
+        |> render("forbidden.html")
+        |> halt
       end
     end
   end
@@ -114,7 +116,9 @@ defmodule Cassette.Controller do
       defp __forbidden_callback__ do
         unquote(opts[:on_forbidden]) ||
           fn conn ->
-            conn |> resp(403, "Forbidden") |> halt
+            conn
+            |> resp(403, "Forbidden")
+            |> halt
           end
       end
 

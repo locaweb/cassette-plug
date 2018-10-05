@@ -5,11 +5,12 @@ defmodule Cassette.ControllerTest do
   import TestController
 
   setup tags do
-    user = if tags[:with_user] do
-      CassetteMock.valid_user
-    else
-      nil
-    end
+    user =
+      if tags[:with_user] do
+        CassetteMock.valid_user()
+      else
+        nil
+      end
 
     conn =
       :get
@@ -21,41 +22,43 @@ defmodule Cassette.ControllerTest do
 
   @tag with_user: false
   test "require_role!/2 halts the connection when there is no user in session", %{conn: conn} do
-    assert %Plug.Conn{halted: true, status: 403} = conn |> require_role!("ADMIN")
+    assert %Plug.Conn{halted: true, status: 403} = require_role!(conn, "ADMIN")
   end
 
   @tag with_user: true
   test "require_role!/2 halts the connection when user does not have the role", %{conn: conn} do
-    assert %Plug.Conn{halted: true, status: 403} = conn |> require_role!("SOME_WEIRD_ROLE")
+    assert %Plug.Conn{halted: true, status: 403} = require_role!(conn, "SOME_WEIRD_ROLE")
   end
 
   @tag with_user: true
   test "require_role!/2 calls the `on_forbidden` callback", %{conn: conn} do
-    assert %Plug.Conn{status: 403, resp_body: "you cannot"} = conn |> require_role!("SOME_WEIRD_ROLE")
+    assert %Plug.Conn{status: 403, resp_body: "you cannot"} =
+             require_role!(conn, "SOME_WEIRD_ROLE")
   end
 
   @tag with_user: true
   test "require_role!/2 does not halt the connection when user has the role", %{conn: conn} do
-    assert %Plug.Conn{halted: false} = conn |> require_role!("ADMIN")
+    assert %Plug.Conn{halted: false} = require_role!(conn, "ADMIN")
   end
 
   @tag with_user: false
   test "require_raw_role!/2 halts the connection when there is no user in session", %{conn: conn} do
-    assert %Plug.Conn{halted: true, status: 403} = conn |> require_raw_role!("ACME_ADMIN")
+    assert %Plug.Conn{halted: true, status: 403} = require_raw_role!(conn, "ACME_ADMIN")
   end
 
   @tag with_user: true
   test "require_raw_role!/2 halts the connection when user does not have the role", %{conn: conn} do
-    assert %Plug.Conn{halted: true, status: 403} = conn |> require_raw_role!("SOME_WEIRD_ROLE")
+    assert %Plug.Conn{halted: true, status: 403} = require_raw_role!(conn, "SOME_WEIRD_ROLE")
   end
 
   @tag with_user: true
   test "require_raw_role!/2 does not halt the connection when user has the role", %{conn: conn} do
-    assert %Plug.Conn{halted: false} = conn |> require_raw_role!("ACME_ADMIN")
+    assert %Plug.Conn{halted: false} = require_raw_role!(conn, "ACME_ADMIN")
   end
 
   @tag with_user: true
   test "require_raw_role!/2 calls the `on_forbidden` callback", %{conn: conn} do
-    assert %Plug.Conn{status: 403, resp_body: "you cannot"} = conn |> require_raw_role!("SOME_WEIRD_ROLE")
+    assert %Plug.Conn{status: 403, resp_body: "you cannot"} =
+             require_raw_role!(conn, "SOME_WEIRD_ROLE")
   end
 end

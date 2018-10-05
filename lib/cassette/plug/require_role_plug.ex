@@ -25,7 +25,9 @@ defmodule Cassette.Plug.RequireRolePlug do
   """
   @spec current_user(Conn.t()) :: User.t() | nil
   def current_user(conn) do
-    conn |> fetch_session |> get_session("cas_user")
+    conn
+    |> fetch_session
+    |> get_session("cas_user")
   end
 
   defp __config__(opts) do
