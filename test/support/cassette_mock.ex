@@ -3,12 +3,15 @@ defmodule CassetteMock do
   Test helper module with Cassette-related utility functions
   """
 
+  alias Cassette.Config
+  alias Cassette.User
+
   @valid_ticket "ST-a-valid-ticket"
   @invalid_ticket "ST-an-invalid-ticket"
 
   def config do
     %{
-      Cassette.Config.default()
+      Config.default()
       | service: "example.org",
         base_url: "http://cas.example.org",
         base_authority: "ACME"
@@ -20,7 +23,7 @@ defmodule CassetteMock do
   def invalid_ticket, do: @invalid_ticket
 
   def valid_user do
-    Cassette.User.new("john.doe", ["ACME_ADMIN"])
+    User.new("john.doe", ["ACME_ADMIN"])
   end
 
   def validate(@valid_ticket, _service) do
