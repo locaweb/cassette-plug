@@ -33,5 +33,6 @@ config :cassette, base_authority: "ACME"
 config :cassette, service: "example.org"
 
 # only for running controller tests
-config :cassette_plug, :secret_key_base,
-  "uohIyjofAtAbo4q6zBmyb4KiLr6FPQtXNvKMiIVyd8dLFndTDDHxJspo9LIqiNT6re5nqlJr2sIs5xsORkTDyQ=="
+config :cassette_plug,
+       :secret_key_base,
+       "uohIyjofAtAbo4q6zBmyb4KiLr6FPQtXNvKMiIVyd8dLFndTDDHxJspo9LIqiNT6re5nqlJr2sIs5xsORkTDyQ=="

@@ -7,10 +7,11 @@ defmodule CassetteMock do
   @invalid_ticket "ST-an-invalid-ticket"
 
   def config do
-    %{Cassette.Config.default |
-      service: "example.org",
-      base_url: "http://cas.example.org",
-      base_authority: "ACME"
+    %{
+      Cassette.Config.default()
+      | service: "example.org",
+        base_url: "http://cas.example.org",
+        base_authority: "ACME"
     }
   end
 

@@ -11,8 +11,8 @@ defmodule TestRouter do
 
   require_role(role: "testing")
 
-  plug :match
-  plug :dispatch
+  plug(:match)
+  plug(:dispatch)
 
   get "/" do
     send_resp(conn, 200, "olar")

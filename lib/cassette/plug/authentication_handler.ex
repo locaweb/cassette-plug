@@ -108,7 +108,10 @@ defmodule Cassette.Plug.AuthenticationHandler do
         location =
           "#{cassette.config.base_url}/login?service=#{URI.encode(service(conn, options))}"
 
-        conn |> put_resp_header("location", location) |> send_resp(307, "") |> halt
+        conn
+        |> put_resp_header("location", location)
+        |> send_resp(307, "")
+        |> halt
       end
 
       @doc """
@@ -116,7 +119,9 @@ defmodule Cassette.Plug.AuthenticationHandler do
       """
       @spec invalid_authentication(conn :: Conn.t(), options :: term) :: Conn.t()
       def invalid_authentication(conn, _options) do
-        conn |> send_resp(403, "Forbidden") |> halt
+        conn
+        |> send_resp(403, "Forbidden")
+        |> halt
       end
 
       @doc """
@@ -133,7 +138,7 @@ defmodule Cassette.Plug.AuthenticationHandler do
       """
       @spec user_authenticated(conn :: Conn.t(), user :: User.t(), options :: term) :: Conn.t()
       def user_authenticated(conn, user, _options) do
-        conn |> put_session("cas_user", user)
+        put_session(conn, "cas_user", user)
       end
 
       @doc """
@@ -152,7 +157,7 @@ defmodule Cassette.Plug.AuthenticationHandler do
 
       @spec query_string(Conn.t()) :: String.t()
       defp query_string(conn = %Conn{query_params: %Conn.Unfetched{aspect: :query_params}}) do
-        query_string(conn |> Conn.fetch_query_params())
+        query_string(Conn.fetch_query_params(conn))
       end
 
       defp query_string(conn) do
