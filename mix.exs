@@ -52,7 +52,7 @@ defmodule Cassette.Plug.Mixfile do
       {:earmark, "~> 1.0", only: :dev},
       {:dialyze, "~> 0.2", only: [:dev, :test]},
       {:cassette, "~> 1.0"},
-      {:credo, "~> 0.5", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:plug, "~> 1.0"},
       {:excoveralls, "~> 0.7", only: :test}
     ]
